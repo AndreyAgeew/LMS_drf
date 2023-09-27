@@ -10,3 +10,13 @@ class Course(models.Model):
         return f'{self.title}'
 
 
+class Lesson(models.Model):
+    title = models.CharField(max_length=150, verbose_name='название')
+    description = models.TextField(verbose_name='описание')
+    preview = models.ImageField(upload_to='lesson/', verbose_name='превью')
+    url = models.URLField(verbose_name='ссылка на видео')
+
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name="курс")
+
+    def __str__(self):
+        return f'{self.title}'
