@@ -3,6 +3,18 @@ from django.db import models
 
 
 class User(AbstractUser):
+    """
+        Расширенная модель пользователя для проекта Django.
+
+        Заменяет стандартную модель пользователя Django для включения
+        дополнительной информации, такой как email, аватар, телефон и страна.
+
+        Attributes:
+            email (str): Уникальный адрес электронной почты пользователя.
+            avatar (ImageField): Изображение профиля пользователя.
+            phone (str): Номер телефона пользователя.
+            country (str): Страна, в которой проживает пользователь.
+    """
     username = None
     email = models.EmailField(unique=True, verbose_name='Почта')
     avatar = models.ImageField(upload_to='users/', null=True, blank=True, verbose_name='Аватар')
