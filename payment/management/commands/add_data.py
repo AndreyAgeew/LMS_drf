@@ -10,6 +10,18 @@ fake = Faker()
 
 
 class Command(BaseCommand):
+    """
+        Команда для сброса и добавления тестовых данных в модель Payment.
+
+        Метод `handle` выполняет следующие шаги:
+        1. Удаляет все записи в моделях Payment, Lesson и Course.
+        2. Создает 5 пользователей и сохраняет их в список.
+        3. Создает 5 курсов и для каждого курса создает 3 урока.
+        4. Создает 20 случайных платежей, связанных с пользователями, курсами и уроками.
+
+        Attributes:
+            help (str): Описание команды для вывода при запуске `python manage.py help`.
+    """
     help = 'Reset and add sample payment data to the Payment model'
 
     def handle(self, *args, **kwargs):
