@@ -23,4 +23,4 @@ class Payment(models.Model):
     )
 
     def __str__(self):
-        return f'{self.user.username} - {self.date} - {self.amount}'
+        return f'{self.user.email} - {self.date} - {self.amount}'
