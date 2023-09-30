@@ -1,3 +1,6 @@
+import os
+
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from users.models import User
 from course.models import Course, Lesson
@@ -14,10 +17,11 @@ class Command(BaseCommand):
         Команда для сброса и добавления тестовых данных в модель Payment.
 
         Метод `handle` выполняет следующие шаги:
-        1. Удаляет все записи в моделях Payment, Lesson и Course.
-        2. Создает 5 пользователей и сохраняет их в список.
-        3. Создает 5 курсов и для каждого курса создает 3 урока.
-        4. Создает 20 случайных платежей, связанных с пользователями, курсами и уроками.
+        1. Удаляет все записи в моделях Payment, Lesson, Course и User.
+        2. Создает супер пользователя
+        3. Создает 5 пользователей и сохраняет их в список.
+        4. Создает 5 курсов и для каждого курса создает 3 урока.
+        5. Создает 20 случайных платежей, связанных с пользователями, курсами и уроками.
 
         Attributes:
             help (str): Описание команды для вывода при запуске `python manage.py help`.
@@ -29,7 +33,17 @@ class Command(BaseCommand):
         Payment.objects.all().delete()
         Lesson.objects.all().delete()
         Course.objects.all().delete()
+        User.objects.all().delete()
 
+        super_user = User.objects.create(
+            email=settings.EMAIL_HOST_USER,
+            first_name='Admin',
+            last_name='LMS',
+            is_staff=True,
+            is_superuser=True
+        )
+        super_user.set_password(os.getenv('ADMIN_PASSWORD'))
+        super_user.save()
         users = []
         for _ in range(5):
             email = fake.email()
