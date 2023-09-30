@@ -2,7 +2,7 @@ import os
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from users.models import User
+from users.models import User, UserRoles
 from course.models import Course, Lesson
 from payment.models import Payment
 from faker import Faker
@@ -19,9 +19,10 @@ class Command(BaseCommand):
         Метод `handle` выполняет следующие шаги:
         1. Удаляет все записи в моделях Payment, Lesson, Course и User.
         2. Создает супер пользователя
-        3. Создает 5 пользователей и сохраняет их в список.
-        4. Создает 5 курсов и для каждого курса создает 3 урока.
-        5. Создает 20 случайных платежей, связанных с пользователями, курсами и уроками.
+        3. Создает модератор пользователя
+        4. Создает 5 пользователей и сохраняет их в список.
+        5. Создает 5 курсов и для каждого курса создает 3 урока.
+        6. Создает 20 случайных платежей, связанных с пользователями, курсами и уроками.
 
         Attributes:
             help (str): Описание команды для вывода при запуске `python manage.py help`.
@@ -44,13 +45,25 @@ class Command(BaseCommand):
         )
         super_user.set_password(os.getenv('ADMIN_PASSWORD'))
         super_user.save()
+        moderator_user = User.objects.create(
+            email=os.getenv('MODERATOR_EMAIL'),
+            first_name='Admin',
+            last_name='LMS',
+            role=UserRoles.MODERATOR
+        )
+        moderator_user.set_password(os.getenv('ADMIN_PASSWORD'))
+        moderator_user.save()
         users = []
         for _ in range(5):
             email = fake.email()
-            password = fake.password()
             phone = fake.numerify()
             country = fake.country()
-            user = User.objects.create(email=email, password=password, phone=phone, country=country)
+            first_name = fake.first_name()
+            last_name = fake.last_name()
+            user = User.objects.create(email=email, phone=phone, country=country,
+                                       first_name=first_name, last_name=last_name)
+            user.set_password(os.getenv('ADMIN_PASSWORD'))
+            user.save()
             users.append(user)
 
         courses = []
