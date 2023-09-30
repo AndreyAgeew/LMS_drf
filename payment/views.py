@@ -3,6 +3,7 @@ from rest_framework import viewsets
 from .models import Payment
 from .serializers import PaymentSerializer
 from .filters import PaymentFilter
+from rest_framework.permissions import IsAuthenticated
 
 
 class PaymentViewSet(viewsets.ModelViewSet):
@@ -19,3 +20,4 @@ class PaymentViewSet(viewsets.ModelViewSet):
     serializer_class = PaymentSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = PaymentFilter
+    permission_classes = [IsAuthenticated]
