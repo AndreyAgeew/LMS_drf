@@ -6,6 +6,19 @@ from .serializers import UserLoginSerializer, UserSerializer
 
 
 class UserLoginViewSet(viewsets.ViewSet):
+    """
+        Представление (ViewSet) для аутентификации пользователя и создания токена.
+
+        Attributes:
+            serializer_class (UserLoginSerializer): Класс сериализатора для аутентификации.
+
+        Methods:
+            create(request, *args, **kwargs): Метод для обработки запроса на аутентификацию пользователя,
+                создания токена и возврата данных пользователя вместе с токеном.
+
+        Returns:
+            Response: Ответ, содержащий токен и данные пользователя.
+    """
     serializer_class = UserLoginSerializer
 
     def create(self, request, *args, **kwargs):
