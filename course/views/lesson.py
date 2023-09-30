@@ -1,8 +1,9 @@
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, RetrieveAPIView, DestroyAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from course.models import Lesson
 from course.serializers.lesson import LessonSerializer
+from permissions import IsOwner, IsModerator
 
 
 class LessonListAPIView(ListAPIView):
@@ -26,7 +27,7 @@ class LessonCreateAPIView(CreateAPIView):
             serializer_class (LessonSerializer): Сериализатор, используемый для преобразования JSON в объект урока.
     """
     serializer_class = LessonSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
 
 class LessonDestroyAPIView(DestroyAPIView):
@@ -37,7 +38,7 @@ class LessonDestroyAPIView(DestroyAPIView):
             queryset (QuerySet): Набор объектов уроков, используемых для поиска урока, который нужно удалить.
     """
     queryset = Lesson.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsOwner | IsAdminUser]
 
 
 class LessonUpdateAPIView(UpdateAPIView):
@@ -50,7 +51,7 @@ class LessonUpdateAPIView(UpdateAPIView):
     """
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsOwner | IsModerator | IsAdminUser]
 
 
 class LessonRetrieveAPIView(RetrieveAPIView):
@@ -63,4 +64,4 @@ class LessonRetrieveAPIView(RetrieveAPIView):
     """
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsOwner | IsModerator | IsAdminUser]
