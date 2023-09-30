@@ -55,10 +55,11 @@ class Command(BaseCommand):
 
         courses = []
         lessons = []
-        for _ in range(5):
+        for i in range(5):
             course = Course.objects.create(
                 title=fake.word(),
                 description=fake.text(),
+                owner=users[i],
             )
             courses.append(course)
 
@@ -68,6 +69,7 @@ class Command(BaseCommand):
                     description=fake.text(),
                     course=course,
                     url=fake.url(),
+                    owner=users[i],
                 )
                 lessons.append(lesson)
 
