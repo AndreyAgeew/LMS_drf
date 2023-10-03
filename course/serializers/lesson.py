@@ -1,9 +1,11 @@
 from rest_framework import serializers
 
 from course.models import Lesson
+from course.validators import validator_scam_url
 
 
 class LessonSerializer(serializers.ModelSerializer):
+    url = serializers.URLField(validators=[validator_scam_url])
     """
         Сериализатор модели урока для использования в Django REST framework.
 

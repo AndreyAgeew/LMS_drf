@@ -59,3 +59,21 @@ class Lesson(models.Model):
 
     def __str__(self):
         return f'{self.title}'
+
+
+class Subscription(models.Model):
+    """
+        Модель подписки на курс.
+
+        Attributes:
+            user (ForeignKey): Ссылка на модель пользователя, который подписан на курс.
+            course (ForeignKey): Ссылка на модель курса, на который подписан пользователь.
+
+        Methods:
+            __str__(): Возвращает строковое представление объекта подписки.
+    """
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="пользователь")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name="курс")
+
+    def __str__(self):
+        return f'{self.user.email} подписан на {self.course.title}'
