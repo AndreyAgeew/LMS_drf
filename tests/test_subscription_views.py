@@ -2,8 +2,8 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
-from django.contrib.auth import get_user_model
 from course.models import Course, Subscription
+from users.models import User
 
 
 @pytest.mark.django_db
@@ -14,7 +14,8 @@ class TestSubscriptionViews:
 
     @pytest.fixture
     def user(self):
-        return get_user_model().objects.create_user(username='testuser', password='testpassword')
+        return User.objects.create(email='testuser@example.com',
+                                   password='testpassword', role='moderator')
 
     @pytest.fixture
     def course(self):
