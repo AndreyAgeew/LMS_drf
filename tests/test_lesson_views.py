@@ -1,42 +1,12 @@
 import pytest
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APIClient
-from course.models import Course, Lesson
+from course.models import Lesson
 from course.serializers.lesson import LessonSerializer
-from users.models import User
 
 
 @pytest.mark.django_db
 class TestLessonViews:
-    @pytest.fixture
-    def client(self):
-        return APIClient()
-
-    @pytest.fixture
-    def user(self):
-        return User.objects.create(email='testuser@example.com',
-                                   password='testpassword', role='moderator')
-
-    @pytest.fixture
-    def super_user(self):
-        super_user = User.objects.create(
-            email='testadmin@example.com',
-            password='testpassword',
-            first_name='Admin',
-            last_name='LMS',
-            is_staff=True,
-            is_superuser=True
-        )
-        return super_user
-
-    @pytest.fixture
-    def course(self):
-        return Course.objects.create(title='Test Course', description='Test Description')
-
-    @pytest.fixture
-    def lesson(self, course):
-        return Lesson.objects.create(title='Test Lesson', description='Test Lesson Description', course=course)
 
     def test_list_lessons(self, client, user, lesson):
         url = reverse('course:lesson-list')
