@@ -39,6 +39,7 @@ class Payment(models.Model):
         default='cash',
         verbose_name="способ оплаты"
     )
+    stripe_id = models.CharField(max_length=255, verbose_name='id платежа на stripe', blank=True, null=True)
 
     def __str__(self):
         return f'{self.user.email} - {self.date} - {self.amount}'
