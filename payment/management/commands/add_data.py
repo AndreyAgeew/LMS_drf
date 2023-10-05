@@ -69,9 +69,11 @@ class Command(BaseCommand):
         courses = []
         lessons = []
         for i in range(5):
+            amount = Decimal(random.uniform(10, 100))
             course = Course.objects.create(
                 title=fake.word(),
                 description=fake.text(),
+                amount=amount,
                 owner=users[i],
             )
             courses.append(course)
@@ -89,7 +91,6 @@ class Command(BaseCommand):
         for _ in range(20):
             user = random.choice(users)
             payment_date = fake.date_between(start_date='-30d', end_date='today')
-            amount = Decimal(random.uniform(10, 100))
             payment_method = random.choice(['cash', 'transfer'])
 
             is_course = random.choice([True, False])
@@ -100,6 +101,6 @@ class Command(BaseCommand):
                 date=payment_date,
                 course=course_or_lesson if is_course else None,
                 lesson=course_or_lesson if not is_course else None,
-                amount=amount,
+
                 payment_method=payment_method,
             )

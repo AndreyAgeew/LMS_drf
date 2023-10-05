@@ -27,7 +27,6 @@ class Payment(models.Model):
                                verbose_name="оплаченный курс")
     lesson = models.ForeignKey('course.Lesson', on_delete=models.CASCADE, null=True, blank=True,
                                verbose_name="оплаченный урок")
-    amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="сумма оплаты")
 
     PAYMENT_METHOD_CHOICES = [
         ('cash', 'Наличные'),
@@ -39,7 +38,7 @@ class Payment(models.Model):
         default='cash',
         verbose_name="способ оплаты"
     )
-    stripe_id = models.CharField(max_length=255, verbose_name='id платежа на stripe', blank=True, null=True)
+
 
     def __str__(self):
-        return f'{self.user.email} - {self.date} - {self.amount}'
+        return f'{self.user.email} - {self.date}'
