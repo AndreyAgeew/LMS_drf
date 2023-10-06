@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework.authtoken',
     'drf_yasg',
+    'django_celery_beat',
     'users',
     'course',
     'payment',
@@ -170,5 +171,24 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
-
+# Key for stripe
 STRIPE_API_KEY = os.getenv('STRIPE_API_KEY')
+
+# cache
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': os.getenv('CACHES_LOCATION'), }}
+
+# Celery broker settings
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
+# Отслеживание задач CELERY
+CELERY_TASK_TRACK_STARTED = True
+# CELERY_BEAT
+CELERY_BEAT_SCHEDULE = {
+    'user_activity_check': {
+        'task': 'jobs.is_active_users.user_activity_check',
+        'schedule': timedelta(days=1),
+    },
+}

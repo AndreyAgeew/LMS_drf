@@ -12,7 +12,6 @@ def _create_product(product):
     params = {
         'name': product,
     }
-    print(params)
     response = requests.post(url, headers=headers, params=params)
     return response.json()
 
@@ -30,7 +29,6 @@ def create_price(product, price):
     }
 
     response = requests.post(url, headers=headers, params=params)
-    print(response)
     return response.json()
 
 
@@ -45,6 +43,5 @@ def get_payment_link(obj):
         'mode': 'payment',
         'success_url': 'https://example.com/success',
     }
-    print(params)
     response = requests.post(url, headers=headers, params=params)
     return response.json()

@@ -1,9 +1,11 @@
+from rest_framework import status
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from course.models import Course
 from course.paginators.course import CoursePaginator
 from course.serializers.course import CourseSerializer
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-
+from jobs.sending_course_update import send_email_course_update
 from permissions import IsOwner, IsModerator
 
 
@@ -33,3 +35,10 @@ class CourseViewSet(ModelViewSet):
         else:
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+
+        send_email_course_update.delay(instance.pk)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
