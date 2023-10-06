@@ -174,6 +174,21 @@ SIMPLE_JWT = {
 # Key for stripe
 STRIPE_API_KEY = os.getenv('STRIPE_API_KEY')
 
+# cache
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': os.getenv('CACHES_LOCATION'), }}
+
 # Celery broker settings
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
 CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
+# Отслеживание задач CELERY
+CELERY_TASK_TRACK_STARTED = True
+# CELERY_BEAT
+CELERY_BEAT_SCHEDULE = {
+    'user_activity_check': {
+        'task': 'jobs.is_active_users.user_activity_check',
+        'schedule': timedelta(days=1),
+    },
+}
