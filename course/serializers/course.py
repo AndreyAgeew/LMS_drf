@@ -59,5 +59,4 @@ class CourseSerializer(serializers.ModelSerializer):
 
     def get_payment_url(self, instance):
         payment_data = get_payment_link(instance)
-        print(payment_data)
         return payment_data
