@@ -5,7 +5,7 @@ from course.models import Course
 from course.paginators.course import CoursePaginator
 from course.serializers.course import CourseSerializer
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from jobs.sending_course_update import send_email_course_update
+from users.tasks import send_email_course_update
 from permissions import IsOwner, IsModerator
 
 

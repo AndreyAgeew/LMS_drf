@@ -183,12 +183,18 @@ CACHES = {
 # Celery broker settings
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
 CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
-# Отслеживание задач CELERY
+
 CELERY_TASK_TRACK_STARTED = True
-# CELERY_BEAT
+# CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Europe/Moscow'
+
+# Настройки для Celery
 CELERY_BEAT_SCHEDULE = {
-    'user_activity_check': {
-        'task': 'jobs.is_active_users.user_activity_check',
-        'schedule': timedelta(days=1),
+    'task-name': {
+        'task': 'users.tasks.user_activity_check',  # Путь к задаче
+        'schedule': timedelta(seconds=10),  # Расписание выполнения задачи (например, каждые 10 минут)
     },
 }
