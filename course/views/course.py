@@ -38,7 +38,6 @@ class CourseViewSet(ModelViewSet):
 
     def perform_update(self, serializer):
         instance = serializer.save()
-
         send_email_course_update.delay(instance.pk)
 
         return Response(serializer.data, status=status.HTTP_200_OK)

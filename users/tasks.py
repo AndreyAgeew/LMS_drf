@@ -23,7 +23,7 @@ def user_activity_check():
                 user.save()
 
 
-@shared_task
+@shared_task()
 def send_email_course_update(course_pk):
     subscribers = Subscription.objects.filter(course=course_pk)
     course = Course.objects.get(pk=course_pk)
@@ -35,3 +35,9 @@ def send_email_course_update(course_pk):
             recipient_list=[subscriber.user.email],
             fail_silently=False
         )
+
+
+@shared_task()
+def test_shared():
+    for course in Course.objects.all():
+        print(course)
