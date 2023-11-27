@@ -1,47 +1,33 @@
-from django.conf import settings
-import requests
-
-api_key = settings.STRIPE_API_KEY
+import stripe
+from lms_drf.settings import STRIPE_API_KEY
 
 
-def _create_product(product):
-    url = 'https://api.stripe.com/v1/products'
-    headers = {
-        'Authorization': f'Bearer {api_key}',
-    }
-    params = {
-        'name': product,
-    }
-    response = requests.post(url, headers=headers, params=params)
-    return response.json()
+def get_stripe_session(course, user, amount):
+    stripe.api_key = STRIPE_API_KEY
+
+    product_for_stripe = stripe.Product.create(name=course.title)
+    price_for_stripe = stripe.Price.create(
+        unit_amount=int(amount * 100),  # todo - change model for price
+        currency="rub",
+        product=product_for_stripe['id'],
+    )
+    session_for_stripe = stripe.checkout.Session.create(
+        line_items=[
+            {
+                # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+                'price': price_for_stripe,
+                'quantity': 1,
+            },
+        ],
+        mode='payment',
+        success_url='http://mydomain.success',
+        cancel_url='http://mydomain.cancel',
+        customer_email=f'{user.email}'
+    )
+    return session_for_stripe
 
 
-def create_price(product, price):
-    url = 'https://api.stripe.com/v1/prices'
-    headers = {
-        'Authorization': f'Bearer {api_key}',
-    }
-    params = {
-        'currency': 'RUB',
-        'product': _create_product(product),
-
-        'unit_amount': price
-    }
-
-    response = requests.post(url, headers=headers, params=params)
-    return response.json()
-
-
-def get_payment_link(obj):
-    url = 'https://api.stripe.com/v1/checkout/sessions'
-    headers = {
-        'Authorization': f'Bearer {api_key}',
-    }
-    params = {
-        'line_items[0][price]': create_price(obj.title, obj.amount),
-        'line_items[0][quantity]': 1,
-        'mode': 'payment',
-        'success_url': 'https://example.com/success',
-    }
-    response = requests.post(url, headers=headers, params=params)
-    return response.json()
+def get_session_by_stripe_id(stripe_id) -> dict:
+    """ return session from stripe API"""
+    stripe.api_key = STRIPE_API_KEY
+    return stripe.checkout.Session.retrieve(stripe_id)

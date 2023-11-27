@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from datetime import timedelta
+from urllib.parse import urlsplit
 
 from dotenv import load_dotenv
 from pathlib import Path
@@ -29,9 +30,9 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
 DOMAIN_NAME = os.getenv('DOMAIN_NAME')
+
+ALLOWED_HOSTS = [urlsplit(DOMAIN_NAME).hostname]
 
 # Application definition
 
@@ -90,10 +91,10 @@ WSGI_APPLICATION = 'lms_drf.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DATABASES_NAME'),
-        'USER': 'postgres',
-        'PASSWORD': os.getenv('DATABASES_PASSWORD'),
-        'HOST': 'localhost',
+        'NAME': os.getenv('POSTGRES_DB'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
         'PORT': '5432',
     }
 }
@@ -181,14 +182,24 @@ CACHES = {
         'LOCATION': os.getenv('CACHES_LOCATION'), }}
 
 # Celery broker settings
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
-# Отслеживание задач CELERY
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_HOST')
+CELERY_RESULT_BACKEND = os.getenv('CELERY_BROKER_HOST')
+
 CELERY_TASK_TRACK_STARTED = True
-# CELERY_BEAT
+# CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Europe/Moscow'
+
+# Настройки для Celery
 CELERY_BEAT_SCHEDULE = {
-    'user_activity_check': {
-        'task': 'jobs.is_active_users.user_activity_check',
-        'schedule': timedelta(days=1),
+    'task-name-1': {
+        'task': 'users.tasks.user_activity_check',  # Путь к задаче
+        'schedule': timedelta(minutes=10),  # Расписание выполнения задачи (например, каждые 10 минут)
+    },'task-name-2': {
+        'task': 'users.tasks.test_shared',  # Путь к задаче
+        'schedule': timedelta(seconds=10),  # Расписание выполнения задачи (например, каждые 10 минут)
     },
+
 }

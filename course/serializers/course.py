@@ -2,7 +2,6 @@ from rest_framework import serializers
 
 from course.models import Course, Subscription
 from course.serializers.lesson import LessonSerializer
-from payment.services import get_payment_link
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -25,7 +24,6 @@ class CourseSerializer(serializers.ModelSerializer):
     num_lessons = serializers.SerializerMethodField()
     lessons = LessonSerializer(many=True, read_only=True, source='lesson_set')
     is_subscribed = serializers.SerializerMethodField()
-    payment_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
@@ -57,6 +55,3 @@ class CourseSerializer(serializers.ModelSerializer):
 
         return Subscription.objects.filter(user=user, course=obj).exists()
 
-    def get_payment_url(self, instance):
-        payment_data = get_payment_link(instance)
-        return payment_data
