@@ -15,5 +15,3 @@ COPY . .
 
 
 RUN chmod a+x docker/*.sh
-
-CMD ["python", "manage.py", "runserver"]
